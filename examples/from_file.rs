@@ -1,4 +1,4 @@
-use bclust::cluster_similarity;
+use chordclust::cluster_similarity;
 use std::io::BufReader;
 use std::fs::File;
 

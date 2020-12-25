@@ -1,5 +1,5 @@
 [package]
-name = "bclust"
+name = "chordclust"
 version = "0.1.0"
 authors = ["carrascomj <carrascomurielj@gmail.com>"]
 edition = "2018"

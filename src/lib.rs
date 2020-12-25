@@ -22,7 +22,7 @@ use std::io::Read;
 /// 
 /// # Examples
 /// ```
-/// use bclust::read_fasta_sorted;
+/// use chordclust::read_fasta_sorted;
 ///
 /// const FASTA_FILE: &[u8] = b">id desc
 /// AAAA
@@ -67,7 +67,7 @@ pub fn cluster_similarity<Buf: Read>(buf: Buf, k: usize, similarity_threshold: u
 /// ```
 /// use std::fs::File;
 /// use std::io::BufReader;
-/// use bclust::{read_fasta_sorted, cluster_slice};
+/// use chordclust::{read_fasta_sorted, cluster_slice};
 ///
 /// let f = File::open("examples/UP000000425_122586_DNA_sample.fasta").unwrap();
 /// let reader = BufReader::new(f);
