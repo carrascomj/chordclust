@@ -17,9 +17,9 @@ use bio::io::fasta;
 use std::io::Read;
 
 /// Read the sequences inside a buffer in FASTA format and store it in a sorted
-/// `Vec<String>` by length. Based on the greedy nature of the algorithm, the 
-/// first sequence that is seen will form a cluster, 
-/// 
+/// `Vec<String>` by length. Based on the greedy nature of the algorithm, the
+/// first sequence that is seen will form a cluster,
+///
 /// # Examples
 /// ```
 /// use chordclust::read_fasta_sorted;
@@ -28,7 +28,7 @@ use std::io::Read;
 /// AAAA
 /// > id2 another|desc
 /// AAAATTT
-/// > id3 final|desc 
+/// > id3 final|desc
 /// AAUUT
 /// ";
 /// let vec = read_fasta_sorted(std::io::Cursor::new(FASTA_FILE));
@@ -77,7 +77,7 @@ pub fn cluster_similarity<Buf: Read>(buf: Buf, k: usize, similarity_threshold: u
 /// assert!(1 < n_clusters);
 /// assert!(n_clusters < sequences.len());
 /// ```
-pub fn cluster_slice(sequences: &[String], k: usize, similarity_threshold: u32) -> BucketCluster{
+pub fn cluster_slice(sequences: &[String], k: usize, similarity_threshold: u32) -> BucketCluster {
     let mut cluster_db = BucketCluster::new(k, similarity_threshold);
     for seq in sequences.iter() {
         cluster_db.push(seq);

@@ -22,7 +22,7 @@ impl<'c> Cluster<'c> {
         }
     }
     /// Traverse the push to the inner sequences
-    pub fn push(&mut self, seq: &'c str ) {
+    pub fn push(&mut self, seq: &'c str) {
         self.members.push(seq)
     }
 }
