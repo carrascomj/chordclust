@@ -1,5 +1,4 @@
-//! # BCLUST
-//! Bclust implements similarity clustering using [rust-bio](https://github.com/rust-bio/rust-bio).
+//! Chordclust implements similarity clustering using [rust-bio](https://github.com/rust-bio/rust-bio).
 //!
 //! ## Algorithm
 //! The algorithm is a greedy search, similar to what is explained in

@@ -1,8 +1,13 @@
 [package]
 name = "chordclust"
 version = "0.1.0"
-authors = ["carrascomj <carrascomurielj@gmail.com>"]
+authors = ["Jorge Carrasco Muriel <carrascomurielj@gmail.com>"]
 edition = "2018"
+description = "Sequence clustering"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/carrascomj/chordclust"
+categories = ["science"]
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
