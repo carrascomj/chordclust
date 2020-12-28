@@ -9,8 +9,11 @@
 //! 2. For each sequence, compare it with the database of centroids:
 //!   * If identity with best match > T: add to cluster of best match.
 //!   * Else: form a new cluster.
-mod cluster;
+pub mod cluster;
 use cluster::BucketCluster;
+
+mod hierarchical;
+pub use hierarchical::cluster_hierarchical;
 
 use bio::io::fasta;
 use std::io::Read;
