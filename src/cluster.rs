@@ -1,7 +1,6 @@
 use bio::alignment::sparse::{find_kmer_matches_seq1_hashed, lcskpp};
 use bio::alignment::sparse::{hash_kmers, HashMapFx};
 use std::collections::HashMap;
-use std::convert::AsMut;
 
 /// Container for a centroid and the indexes of them.
 #[derive(Default)]
@@ -56,7 +55,7 @@ impl<'c> BucketCluster<'c> {
         }
     }
 
-    fn get_best_cluster(&self, seq: &'c str) -> Option<&str> {
+    fn get_best_cluster<'other>(&self, seq: &'other str) -> Option<&'c str> {
         let query = seq.as_bytes();
         let mut max_score = 0;
         let mut best_idx: Option<&str> = None;
@@ -71,36 +70,15 @@ impl<'c> BucketCluster<'c> {
         best_idx
     }
 
-    fn match_best_cluster(&mut self, seq: &'c str) {
-        let query = seq.as_bytes();
-        let mut max_score = 0;
-        let mut best_idx: Option<&str> = None;
-        for (&centroid, cluster) in self.clusters.iter() {
-            let matches = find_kmer_matches_seq1_hashed(&cluster.hashed_centroid, query, self.k);
-            let score = lcskpp(&matches, self.k).score;
-            if score > self.similarity_threshold && max_score < score {
-                best_idx = Some(centroid);
-                max_score = score;
-            }
-        }
-        if let Some(idx) = best_idx {
+    /// Add the sequence to the best matched cluster or create a new cluster
+    /// if the sequence is not inside the threshold of any centroid
+    pub fn push(&mut self, seq: &'c str) {
+        // self.match_best_cluster(seq);
+        if let Some(idx) = self.get_best_cluster(seq) {
             self.clusters.entry(idx).or_default().push(seq);
         } else {
             // TODO: remove this unwrap
             self.clusters.insert(seq, Cluster::new(seq, self.k));
         }
-    }
-
-    /// Add the sequence to the best matched cluster or create a new cluster
-    /// if the sequence is not inside the threshold of any centroid
-    pub fn push(&mut self, seq: &'c str) {
-        self.match_best_cluster(seq);
-        // if let Some(idx) = self.get_best_cluster(seq) {
-        //     let clust = &mut self.clusters.entry(idx);
-        //     clust.or_default().members.push(seq);
-        // } else {
-        //     // TODO: remove this unwrap
-        //     self.clusters.insert(seq, Cluster::new(seq, self.k)).unwrap();
-        // }
     }
 }
