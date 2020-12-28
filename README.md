@@ -10,12 +10,24 @@ Chordclust implements similarity clustering using [rust-bio](https://github.com/
 ### Algorithm
 The algorithm is a greedy search, similar to what is explained in
 https://www.drive5.com/usearch/manual/uclust_algo.html. It uses similarity
-instead of identity (for now)
+instead of identity (for now):
 
-1. Sort by sequence length (bigger is first).
+1. Sort by sequence length (bigger is first)
 2. For each sequence, compare it with the database of centroids:
-  * If identity with best match > T: add to cluster of best match.
-  * Else: form a new cluster.
+  * If identity with best match > T: add to cluster of best match
+  * Else: form a new cluster
+
+### Hierarchical
+With this kind of heuristic clustering, it is indicated to use a hierarchical
+approach:
+
+1. Given the sequences to cluster `seqs` and a descending array of
+similarity thresholds `[T]`.
+2. For each similarity threshold `T` in `[T]`:
+  * Apply clustering with T to `seqs`
+  * seqs <- current centroids
+3. The final structure is built by expanding the lower similarity clusters
+with the members of their corresponding higher clusters.
 
 ## License
 
