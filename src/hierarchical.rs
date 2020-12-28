@@ -21,11 +21,11 @@ pub fn cluster_hierarchical<'a>(
     for seq in sequences.iter() {
         cluster_db.push(seq);
     }
-    // perform all hierarchical steps from the previous centroids
-    let mut cluster_dbs: Vec<BucketCluster> = Vec::with_capacity(similarity_thresholds.len() - 1);
-    if cluster_dbs.is_empty() {
+    if similarity_thresholds.len() == 1 {
         return cluster_db;
     }
+    // perform all hierarchical steps from the previous centroids
+    let mut cluster_dbs: Vec<BucketCluster> = Vec::with_capacity(similarity_thresholds.len() - 1);
     cluster_dbs.push(cluster_db);
     for (i, &threshold) in similarity_thresholds.iter().enumerate() {
         let mut cluster_db = BucketCluster::new(k, threshold);
