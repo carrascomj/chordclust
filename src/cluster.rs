@@ -3,12 +3,12 @@ use bio::alignment::sparse::{hash_kmers, HashMapFx};
 use std::collections::HashMap;
 
 /// Container for a centroid and the indexes of them.
-#[derive(Default)]
+#[derive(Default, PartialEq)]
 pub struct Cluster<'c> {
     /// each sequence in the cluster
-    pub(crate) members: Vec<&'c str>,
+    pub members: Vec<&'c str>,
     /// sequence that forms the centroid
-    pub(crate) centroid: &'c str,
+    pub centroid: &'c str,
     /// hashed centromer to perform search and similarity
     pub hashed_centroid: HashMapFx<&'c [u8], Vec<u32>>,
 }
@@ -36,6 +36,7 @@ impl<'a> std::fmt::Debug for Cluster<'a> {
 
 /// Cluster by similarity. The elements of each cluster
 /// have s similarity > `similarity_threshold` with the centroid
+#[derive(Debug)]
 pub struct BucketCluster<'a> {
     /// Clusters with a similarity threshold around the centroid
     pub clusters: HashMap<&'a str, Cluster<'a>>,

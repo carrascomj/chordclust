@@ -23,6 +23,9 @@ pub fn cluster_hierarchical<'a>(
     }
     // perform all hierarchical steps from the previous centroids
     let mut cluster_dbs: Vec<BucketCluster> = Vec::with_capacity(similarity_thresholds.len() - 1);
+    if cluster_dbs.is_empty() {
+        return cluster_db;
+    }
     cluster_dbs.push(cluster_db);
     for (i, &threshold) in similarity_thresholds.iter().enumerate() {
         let mut cluster_db = BucketCluster::new(k, threshold);
@@ -55,9 +58,10 @@ pub fn cluster_hierarchical<'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::read_fasta_sorted;
+    use crate::{cluster_slice, read_fasta_sorted};
     use std::fs::File;
     use std::io::BufReader;
+
     #[test]
     fn cluster_hierarchical_works() {
         let f = File::open("examples/UP000000425_122586_DNA_sample.fasta").unwrap();
@@ -68,5 +72,16 @@ mod tests {
         let n_clusters = cluster_db.clusters.len();
         assert!(1 < n_clusters);
         assert!(n_clusters < sequences.len());
+    }
+
+    #[test]
+    fn cluster_hierarchical_with_one_treshold_is_cluster_normal() {
+        let f = File::open("examples/UP000000425_122586_DNA_sample.fasta").unwrap();
+        let reader = BufReader::new(f);
+        let sequences = read_fasta_sorted(reader);
+        let thresholds = [90];
+        let cluster_from_hierarchical = cluster_hierarchical(&sequences, 8, &thresholds).clusters;
+        let cluster_db = cluster_slice(&sequences, 8, thresholds[0]).clusters;
+        assert_eq!(cluster_db, cluster_from_hierarchical);
     }
 }
