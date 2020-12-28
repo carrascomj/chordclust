@@ -84,4 +84,15 @@ mod tests {
         let cluster_db = cluster_slice(&sequences, 8, thresholds[0]).clusters;
         assert_eq!(cluster_db, cluster_from_hierarchical);
     }
+
+    #[test]
+    fn cluster_hierarchical_is_not_cluster_normal() {
+        let f = File::open("examples/UP000000425_122586_DNA_sample.fasta").unwrap();
+        let reader = BufReader::new(f);
+        let sequences = read_fasta_sorted(reader);
+        let thresholds = [90, 85, 70];
+        let cluster_from_hierarchical = cluster_hierarchical(&sequences, 8, &thresholds).clusters;
+        let cluster_db = cluster_slice(&sequences, 8, thresholds[2]).clusters;
+        assert_ne!(cluster_db, cluster_from_hierarchical);
+    }
 }
