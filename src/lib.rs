@@ -15,7 +15,7 @@
 //! approach:
 //!
 //! 1. Given the sequences to cluster `seqs` and a descending array of
-//! similarity thresholds `[T]`. 
+//! similarity thresholds `[T]`.
 //! 2. For each similarity threshold `T` in `[T]`:
 //!   * Apply clustering with T to `seqs`
 //!   * seqs <- current centroids

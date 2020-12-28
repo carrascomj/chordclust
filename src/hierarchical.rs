@@ -33,7 +33,7 @@ pub fn cluster_hierarchical<'a>(
             .for_each(|seq| cluster_db.push(seq));
         cluster_dbs.push(cluster_db);
     }
-    // start from the second highest cluster, expanding the clusters 
+    // start from the second highest cluster, expanding the clusters
     // from their parents (which are centroids of the previous cluster)
     cluster_dbs.reverse();
     // we keep the cluster above the one being expanded
