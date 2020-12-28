@@ -1,13 +1,14 @@
 use bio::alignment::sparse::{find_kmer_matches_seq1_hashed, lcskpp};
 use bio::alignment::sparse::{hash_kmers, HashMapFx};
+use std::collections::HashMap;
 
 /// Container for a centroid and the indexes of them.
 #[derive(Default)]
 pub struct Cluster<'c> {
     /// each sequence in the cluster
-    members: Vec<&'c str>,
+    pub(crate) members: Vec<&'c str>,
     /// sequence that forms the centroid
-    centroid: &'c str,
+    pub(crate) centroid: &'c str,
     /// hashed centromer to perform search and similarity
     pub hashed_centroid: HashMapFx<&'c [u8], Vec<u32>>,
 }
@@ -37,7 +38,7 @@ impl<'a> std::fmt::Debug for Cluster<'a> {
 /// have s similarity > `similarity_threshold` with the centroid
 pub struct BucketCluster<'a> {
     /// Clusters with a similarity threshold around the centroid
-    pub clusters: Vec<Cluster<'a>>,
+    pub clusters: HashMap<&'a str, Cluster<'a>>,
     /// Size of k-mers to perform the search
     k: usize,
     /// Minimum similarity with the centroid to become part of a cluster
@@ -48,21 +49,21 @@ impl<'c> BucketCluster<'c> {
     /// Initialize empty bucket of clusters
     pub fn new(k: usize, similarity_threshold: u32) -> Self {
         BucketCluster {
-            clusters: Vec::new(),
+            clusters: HashMap::new(),
             k,
             similarity_threshold,
         }
     }
 
-    fn get_best_cluster(&self, seq: &str) -> Option<usize> {
+    fn get_best_cluster<'other>(&self, seq: &'other str) -> Option<&'c str> {
         let query = seq.as_bytes();
         let mut max_score = 0;
-        let mut best_idx: Option<usize> = None;
-        for (i, center) in self.clusters.iter().enumerate() {
-            let matches = find_kmer_matches_seq1_hashed(&center.hashed_centroid, query, self.k);
+        let mut best_idx: Option<&str> = None;
+        for (&centroid, cluster) in self.clusters.iter() {
+            let matches = find_kmer_matches_seq1_hashed(&cluster.hashed_centroid, query, self.k);
             let score = lcskpp(&matches, self.k).score;
             if score > self.similarity_threshold && max_score < score {
-                best_idx = Some(i);
+                best_idx = Some(centroid);
                 max_score = score;
             }
         }
@@ -72,10 +73,12 @@ impl<'c> BucketCluster<'c> {
     /// Add the sequence to the best matched cluster or create a new cluster
     /// if the sequence is not inside the threshold of any centroid
     pub fn push(&mut self, seq: &'c str) {
+        // self.match_best_cluster(seq);
         if let Some(idx) = self.get_best_cluster(seq) {
-            self.clusters[idx].push(seq);
+            self.clusters.entry(idx).or_default().push(seq);
         } else {
-            self.clusters.push(Cluster::new(seq, self.k))
+            // TODO: remove this unwrap
+            self.clusters.insert(seq, Cluster::new(seq, self.k));
         }
     }
 }
