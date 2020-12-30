@@ -44,10 +44,9 @@ pub fn cluster_hierarchical<'a>(
     while let Some(mut bucket) = cluster_dbs.pop() {
         bucket.clusters.iter_mut().for_each(|(_, cluster)| {
             let ll = cluster.members.clone();
-            let cluster_new = ll
-                .iter()
-                .flat_map(|seq| clust_above.clusters[seq].members.clone());
-            cluster.members.extend(cluster_new);
+            cluster.members.extend(ll.iter().flat_map(|seq| {
+                std::mem::take(&mut clust_above.clusters.get_mut(seq).unwrap().members)
+            }))
         });
         clust_above = bucket;
     }
