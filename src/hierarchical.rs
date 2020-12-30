@@ -43,10 +43,12 @@ pub fn cluster_hierarchical<'a>(
     let mut clust_above = cluster_dbs.pop().unwrap();
     while let Some(mut bucket) = cluster_dbs.pop() {
         bucket.clusters.iter_mut().for_each(|(_, cluster)| {
-            let ll = cluster.members.clone();
-            cluster.members.extend(ll.iter().flat_map(|seq| {
-                std::mem::take(&mut clust_above.clusters.get_mut(seq).unwrap().members)
-            }))
+            for i in 0..cluster.members.len() {
+                let seq = cluster.members[i];
+                cluster.members.extend(std::mem::take(
+                    &mut clust_above.clusters.get_mut(seq).unwrap().members,
+                ));
+            }
         });
         clust_above = bucket;
     }
