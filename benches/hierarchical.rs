@@ -20,15 +20,16 @@ fn _solve_hierarchical_big() {
 }
 
 fn hierarchical_benchmark(c: &mut Criterion) {
-    c.bench_function("Run hierararchical with sample file", |b| b.iter(solve_hierarchical));
+    c.bench_function("Run hierararchical with sample file", |b| {
+        b.iter(solve_hierarchical)
+    });
 }
 
 fn _hierarchical_big_benchmark(c: &mut Criterion) {
-    c.bench_function("Run hierararchical with big file", |b| b.iter(_solve_hierarchical_big));
+    c.bench_function("Run hierararchical with big file", |b| {
+        b.iter(_solve_hierarchical_big)
+    });
 }
 
-criterion_group!(
-    benches,
-    hierarchical_benchmark,
-);
+criterion_group!(benches, hierarchical_benchmark,);
 criterion_main!(benches);
